@@ -12,7 +12,7 @@ var Usuario = require('../models/usuario')
 app.get('/', (req, res) => {
   var desde = req.query.desde || 0
   desde = Number(desde)
-  Usuario.find({}, 'nombre email imagen role')
+  Usuario.find({}, 'nombre email img role google')
     .skip(desde)
     .limit(5)
     .exec((err, usuarios) => {
@@ -81,7 +81,7 @@ app.put('/:id', mdwAuth.verificaToken, (req, res) => {
 // => Crear un nuevo Usuario
 // ==========================================================================
 
-app.post('/', mdwAuth.verificaToken, (req, res) => {
+app.post('/', (req, res) => {
 
   var body = req.body
   var usuario = new Usuario({

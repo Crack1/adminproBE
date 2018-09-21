@@ -87,7 +87,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
         return res.status(200).json({
           ok: true,
           mensaje: 'Imagen de usuario actualizada',
-          'extensionArchivo': usuarioActualizado
+          'usuario': usuarioActualizado
         })
       })
 
@@ -105,13 +105,13 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
         return res.status(200).json({
           ok: true,
           mensaje: 'Imagen de medico actualizada',
-          'extensionArchivo': medicoActualizado
+          medico: medicoActualizado
         })
       })
 
     })
   }
-  if (tipo === 'hopitales') {
+  if (tipo === 'hospitales') {
     Hospital.findById(id, (err, hospital) => {
       var pathViejo = './uploads/usuarios/' + hospital.img
       //Si existe, elimina la imagen anterior
@@ -123,7 +123,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
         return res.status(200).json({
           ok: true,
           mensaje: 'Imagen de hospital actualizada',
-          'extensionArchivo': hospitalActualizado
+          hospital: hospitalActualizado
         })
       })
 

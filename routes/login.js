@@ -103,7 +103,7 @@ app.post('/google', (req, res) => {
             errors: e
           })
         } else {
-          usuarioDB.password = ':)'
+          usuario.password = ':)'
           //Crear un token
           var token = jwt.sign({
             usuario: usuario
@@ -125,7 +125,7 @@ app.post('/google', (req, res) => {
         usuario.password = ':)'
         usuario.img = payload.picture
         usuario.google = true
-        usuario.save((err, usuarioDB) => {
+        usuario.save((err, usuario) => {
           if (err) {
             return res.status(500).json({
               ok: true,
