@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 // ==========================================================================
 // => Actualizar usuario
 // ==========================================================================
-app.put('/:id', mdwAuth.verificaToken, (req, res) => {
+app.put('/:id', [mdwAuth.verificaToken, mdwAuth.verificaAdminRole], (req, res) => {
   var id = req.params.id
   var body = req.body
 
@@ -105,13 +105,10 @@ app.post('/', (req, res) => {
     })
   })
 })
-
-
-
 // ==========================================================================
 // => Eliminar Usuario
 // ==========================================================================
-app.delete('/:id', mdwAuth.verificaToken, (req, res) => {
+app.delete('/:id', [mdwAuth.verificaToken, mdwAuth.verificaAdminRole], (req, res) => {
   var id = req.params.id
   Usuario.findOneAndRemove(id, (err, usuarioBorrado) => {
     if (err) {

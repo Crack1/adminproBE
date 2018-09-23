@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken')
 var SEED = require('../config/config').SEED
 var GOOGLE_CLIENT_ID = require('../config/config').GOOGLE_CLIENT_ID
 var GOOGLE_SECRET = require('../config/config').GOOGLE_SECRET
+var mdAutenticacion = require('../middlewares/autenticacion')
 
 const {
   OAuth2Client
@@ -13,6 +14,22 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 var app = express()
 var Usuario = require('../models/usuario')
 
+
+// ==========================================================================
+// => Renueva Token
+// ==========================================================================
+app.get('/renuevatoken', mdAutenticacion.verificaToken, (req, res) => {
+
+  var token = jwt.sign({
+    usuario: req.usuario
+  }, SEED, {
+    expiresIn: 14400
+  })
+  return res.status(200).json({
+    ok: true,
+    token
+  })
+})
 // ==========================================================================
 // => Login de Usuario
 // ==========================================================================
@@ -59,7 +76,8 @@ app.post('/', (req, res) => {
       ok: true,
       token,
       usuario: usuarioDB,
-      id: usuarioDB._id
+      id: usuarioDB._id,
+      menu: obtenerMenu(usuarioDB.role)
     })
   })
 
@@ -114,7 +132,8 @@ app.post('/google', (req, res) => {
             ok: true,
             token,
             usuario: usuario,
-            id: usuario._id
+            id: usuario._id,
+            menu: obtenerMenu(usuario.role)
           })
         }
       } else {
@@ -143,7 +162,8 @@ app.post('/google', (req, res) => {
             ok: true,
             token,
             usuario: usuario,
-            id: usuario._id
+            id: usuario._id,
+            menu: obtenerMenu(usuario.role)
           })
         })
       }
@@ -152,5 +172,55 @@ app.post('/google', (req, res) => {
   verify().catch(console.error);
 
 })
+
+function obtenerMenu(ROLE) {
+  console.log(ROLE)
+  var menu = [{
+      titulo: 'Principal',
+      icono: 'mdi mdi-gauge',
+      submenu: [{
+          titulo: 'Dashboard',
+          url: '/dashboard'
+        },
+        {
+          titulo: 'ProgressBar',
+          url: '/progress'
+        },
+        {
+          titulo: 'Graficas',
+          url: '/graficas1'
+        },
+        {
+          titulo: 'Promesas',
+          url: '/promesas'
+        },
+        {
+          titulo: 'RXJS',
+          url: '/rxjs'
+        },
+      ]
+    },
+    {
+      titulo: 'Mantenimientos',
+      icono: 'mdi mdi-folder-lock-open',
+      submenu: [{
+          titulo: 'Hospitales',
+          url: '/hospitales'
+        },
+        {
+          titulo: 'Medicos',
+          url: '/medicos'
+        },
+      ]
+    }
+  ]
+  if (ROLE === 'ADMIN_ROLE') {
+    menu[1].submenu.unshift({
+      titulo: 'Usuarios',
+      url: '/usuarios'
+    })
+  }
+  return menu
+}
 
 module.exports = app
